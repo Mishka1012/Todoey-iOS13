@@ -23,9 +23,8 @@ class ToDoListViewController: UITableViewController {
         // Do any additional setup after loading the view.
         extractArrayFromUserDefaults()
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        //savind data to user defaults
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         saveArrayToUserDefaults()
     }
     
@@ -40,11 +39,8 @@ class ToDoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.cellReuseIdentifier, for: indexPath)
         let item = itemArray[indexPath.row]
         cell.textLabel?.text = item.text
-        if item.check {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        //ternary operator
+        cell.accessoryType = item.check ? .checkmark : .none
         return cell
     }
     //MARK: - Table View Delegate Method
