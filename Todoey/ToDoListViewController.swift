@@ -10,7 +10,7 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
     
-    let itemArray = ["Find Mike", "Buy Eggos", "Destroy Demorgon"]
+    var itemArray = ["Find Mike", "Buy Eggos", "Destroy Demorgon"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,5 +45,31 @@ class ToDoListViewController: UITableViewController {
             cell.accessoryType = .checkmark
         }
     }
+    //MARK: - Add New Items
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        //alert text field text
+        var textField = UITextField()
+        //alert view controller
+        let alert = UIAlertController(title: "Add New ToDoEy Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            //what will happen once user clicks add item button.
+            guard let text = textField.text else {
+                //todo: prevent the default dimiss action
+                print("Unable to get new text item to append to array")
+                return
+            }
+            //changing our data source
+            self.itemArray.append(text)
+            //reloading the table view
+            self.tableView.reloadData()
+        }
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
