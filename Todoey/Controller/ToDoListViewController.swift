@@ -86,6 +86,10 @@ class ToDoListViewController: UITableViewController {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
+    //MARK: - Core Data
+    /*
+     Object Oriented Database.
+     */
     
     //MARK: - NSCoder A different method for savind data
     /*
