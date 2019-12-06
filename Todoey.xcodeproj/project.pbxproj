@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E86A1239239A03EB006F9162 /* ToDoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A1238239A03EB006F9162 /* ToDoItem.swift */; };
+		E86A1239239A03EB006F9162 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A1238239A03EB006F9162 /* Item.swift */; };
 		E86A123B239A05C5006F9162 /* K.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A123A239A05C5006F9162 /* K.swift */; };
 		EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2BE4F9239524DB00FB933B /* AppDelegate.swift */; };
 		EB2BE4FE239524DB00FB933B /* ToDoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2BE4FD239524DB00FB933B /* ToDoListViewController.swift */; };
@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E86A1238239A03EB006F9162 /* ToDoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItem.swift; sourceTree = "<group>"; };
+		E86A1238239A03EB006F9162 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		E86A123A239A05C5006F9162 /* K.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = K.swift; sourceTree = "<group>"; };
 		EB2BE4F6239524DB00FB933B /* Todoey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB2BE4F9239524DB00FB933B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -42,7 +42,7 @@
 		E86A1235239A03AF006F9162 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				E86A1238239A03EB006F9162 /* ToDoItem.swift */,
+				E86A1238239A03EB006F9162 /* Item.swift */,
 				E86A123A239A05C5006F9162 /* K.swift */,
 			);
 			path = Model;
@@ -168,7 +168,7 @@
 				EB2BE4FE239524DB00FB933B /* ToDoListViewController.swift in Sources */,
 				E86A123B239A05C5006F9162 /* K.swift in Sources */,
 				EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */,
-				E86A1239239A03EB006F9162 /* ToDoItem.swift in Sources */,
+				E86A1239239A03EB006F9162 /* Item.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

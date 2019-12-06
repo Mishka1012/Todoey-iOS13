@@ -11,15 +11,18 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     var itemArray = [
-        ToDoItem("Find Mike", checked: false),
-        ToDoItem("Buy Eggos", checked: false),
-        ToDoItem("Destroy Demorgon", checked: false)
+        Item("Find Mike", checked: false),
+        Item("Buy Eggos", checked: false),
+        Item("Destroy Demorgon", checked: false)
     ]
-    
+    //user defaults
     let defaults = UserDefaults.standard
+    //nscoder
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(K.itemsPlistFileName)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadNSCoderData()
         // Do any additional setup after loading the view.
         //user defaults is not the right application for this
         //extractArrayFromUserDefaults()
@@ -53,6 +56,8 @@ class ToDoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         //i'm not sure if we need to reload here
         tableView.reloadData()
+        //saving nscoder data
+        saveNSCoderData()
     }
     //MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -68,9 +73,11 @@ class ToDoListViewController: UITableViewController {
                 return
             }
             //changing our data source
-            self.itemArray.append(ToDoItem(text, checked: false))
+            self.itemArray.append(Item(text, checked: false))
             //reloading the table view to show data
             self.tableView.reloadData()
+            //saving nscoder data
+            self.saveNSCoderData()
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
@@ -80,15 +87,38 @@ class ToDoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    //MARK: - NSCoder
+    //MARK: - NSCoder A different method for savind data
     /*
      SandBoxing concept: Each app can only access its own files and folders.
      Data also gets synched to iCloud
      Apps also can't infect the operating system.
      JailBreak is the only way to bypass this.
+     Having separate files using nscoder helps reduce the loading times for reading and writing for the data.
      */
+    func loadNSCoderData() {
+        guard let data = try? Data(contentsOf: dataFilePath!) else {
+            print("Unable to read data from file")
+            return
+        }
+        let decoder = PropertyListDecoder()
+        do {
+            itemArray = try decoder.decode([Item].self, from: data)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    func saveNSCoderData() {
+        let encoder = PropertyListEncoder()
+        do {
+            let data = try encoder.encode(self.itemArray)
+            try data.write(to: self.dataFilePath!)
+        } catch {
+            print(error.localizedDescription)
+            fatalError()
+        }
+    }
     
-    //MARK: - User Defaults
+    //MARK: - User Defaults is a dictionary
     func saveArrayToUserDefaults() {
         let dataArray = itemArray.map { (item) -> Data in
             guard let safeData = item.data else {
@@ -104,8 +134,8 @@ class ToDoListViewController: UITableViewController {
             print("Can't extract data array from user defaults.")
             return
         }
-        itemArray = dataArray.map({ (data) -> ToDoItem in
-            return ToDoItem(data: data)
+        itemArray = dataArray.map({ (data) -> Item in
+            return Item(data: data)
         })
         //It is not good to keep arrays in user defaults since it will make user loading app really slow.  It's not a databse so it should not be used as such.
         /*Sigletons Notes

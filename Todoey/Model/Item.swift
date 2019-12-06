@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct ToDoItem: Decodable, Encodable {
+struct Item: Codable {
     let text: String
     var check: Bool
     var data: Data? {
@@ -30,7 +30,7 @@ struct ToDoItem: Decodable, Encodable {
             fatalError()
         }
         do {
-            let decoded = try JSONDecoder().decode(ToDoItem.self, from: safeData)
+            let decoded = try JSONDecoder().decode(Item.self, from: safeData)
             self = decoded
         } catch {
             print(error.localizedDescription)
