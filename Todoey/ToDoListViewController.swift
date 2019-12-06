@@ -19,6 +19,13 @@ class ToDoListViewController: UITableViewController {
         // Do any additional setup after loading the view.
         itemArray = defaults.array(forKey: "TodoListArray") as? [String] ?? itemArray
         //It is not good to keep arrays in user defaults since it will make user loading app really slow.  It's not a databse so it should not be used as such.
+        /*Sigletons Notes
+         singletons don't matter how many references are made the original gets changed with the reference nomatter who is calling the object.
+         class UserDefaults {
+            standard = UserDefaults()//Roughly points to the same plist in bundle
+         }
+         this makes this object quite persistent nomatter the instance references I can make from various files.
+         */
     }
     
     //MARK: - Tableview Datasource Methods
