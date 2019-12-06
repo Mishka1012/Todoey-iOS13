@@ -31,8 +31,8 @@ class ToDoListViewController: UITableViewController {
     }
     //MARK: - Table View Delegate Method
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //Challenge completed:
-        //print(itemArray[indexPath.row])
+        //deselecting highlight on the cells with animation.
+        tableView.deselectRow(at: indexPath, animated: true)
         //cell Reference
         guard let cell = tableView.cellForRow(at: indexPath) else {
             print("Unable to find cell")
@@ -44,8 +44,6 @@ class ToDoListViewController: UITableViewController {
         } else {
             cell.accessoryType = .checkmark
         }
-        //deselecting the cells with animation.
-        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
