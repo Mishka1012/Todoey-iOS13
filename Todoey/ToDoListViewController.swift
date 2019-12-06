@@ -18,6 +18,7 @@ class ToDoListViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         itemArray = defaults.array(forKey: "TodoListArray") as? [String] ?? itemArray
+        //It is not good to keep arrays in user defaults since it will make user loading app really slow.  It's not a databse so it should not be used as such.
     }
     
     //MARK: - Tableview Datasource Methods
