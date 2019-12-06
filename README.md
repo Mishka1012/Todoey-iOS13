@@ -3,9 +3,7 @@
 
 # Todoey ✓
 
-## Our Goal
-
-The objective of this tutorial is to understand how to save data in iOS. We'll look at various choices and learn to use UserDefaults, Core Data and Realm.
+App Brewery bootcamp project for me to learn to use UserDefaults, Core Data and Realm in swift 5.
 
 
 >This is a companion project to The App Brewery's Complete iOS Development Bootcamp, check out the full course at [www.appbrewery.co](https://www.appbrewery.co/)
