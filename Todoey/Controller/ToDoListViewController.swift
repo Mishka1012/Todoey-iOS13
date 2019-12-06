@@ -21,11 +21,13 @@ class ToDoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        extractArrayFromUserDefaults()
+        //user defaults is not the right application for this
+        //extractArrayFromUserDefaults()
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        saveArrayToUserDefaults()
+        //this is too slow, we have to use something else.
+        //saveArrayToUserDefaults()
     }
     
     //MARK: - Tableview Datasource Methods
@@ -77,6 +79,15 @@ class ToDoListViewController: UITableViewController {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
+    
+    //MARK: - NSCoder
+    /*
+     SandBoxing concept: Each app can only access its own files and folders.
+     Data also gets synched to iCloud
+     Apps also can't infect the operating system.
+     JailBreak is the only way to bypass this.
+     */
+    
     //MARK: - User Defaults
     func saveArrayToUserDefaults() {
         let dataArray = itemArray.map { (item) -> Data in
