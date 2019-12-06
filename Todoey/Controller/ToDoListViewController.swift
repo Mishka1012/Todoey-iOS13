@@ -23,6 +23,11 @@ class ToDoListViewController: UITableViewController {
         // Do any additional setup after loading the view.
         extractArrayFromUserDefaults()
     }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        //savind data to user defaults
+        saveArrayToUserDefaults()
+    }
     
     //MARK: - Tableview Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -46,8 +51,6 @@ class ToDoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //toggling the check mark
         itemArray[indexPath.row].check = !itemArray[indexPath.row].check
-        //saving the itemArray to user defaults
-        saveArrayToUserDefaults()
         //deselecting highlight on the cells with animation.
         tableView.deselectRow(at: indexPath, animated: true)
         //i'm not sure if we need to reload here
@@ -68,8 +71,6 @@ class ToDoListViewController: UITableViewController {
             }
             //changing our data source
             self.itemArray.append(ToDoItem(text, checked: false))
-            //save array to user defaults
-            self.saveArrayToUserDefaults()
             //reloading the table view to show data
             self.tableView.reloadData()
         }
