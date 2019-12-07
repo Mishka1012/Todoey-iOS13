@@ -11,9 +11,9 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     var itemArray = [
-        Item("Find Mike", checked: false),
-        Item("Buy Eggos", checked: false),
-        Item("Destroy Demorgon", checked: false)
+        ListItem("Find Mike", checked: false),
+        ListItem("Buy Eggos", checked: false),
+        ListItem("Destroy Demorgon", checked: false)
     ]
     //user defaults
     let defaults = UserDefaults.standard
@@ -73,7 +73,7 @@ class ToDoListViewController: UITableViewController {
                 return
             }
             //changing our data source
-            self.itemArray.append(Item(text, checked: false))
+            self.itemArray.append(ListItem(text, checked: false))
             //reloading the table view to show data
             self.tableView.reloadData()
             //saving nscoder data
@@ -88,7 +88,7 @@ class ToDoListViewController: UITableViewController {
     }
     //MARK: - Core Data
     /*
-     Object Oriented Database.
+     Object Oriented Database. Can be relational.
      */
     
     //MARK: - NSCoder A different method for savind data
@@ -106,7 +106,7 @@ class ToDoListViewController: UITableViewController {
         }
         let decoder = PropertyListDecoder()
         do {
-            itemArray = try decoder.decode([Item].self, from: data)
+            itemArray = try decoder.decode([ListItem].self, from: data)
         } catch {
             print(error.localizedDescription)
         }
@@ -138,8 +138,8 @@ class ToDoListViewController: UITableViewController {
             print("Can't extract data array from user defaults.")
             return
         }
-        itemArray = dataArray.map({ (data) -> Item in
-            return Item(data: data)
+        itemArray = dataArray.map({ (data) -> ListItem in
+            return ListItem(data: data)
         })
         //It is not good to keep arrays in user defaults since it will make user loading app really slow.  It's not a databse so it should not be used as such.
         /*Sigletons Notes

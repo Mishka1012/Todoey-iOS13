@@ -12,4 +12,8 @@ struct K {
     static let cellReuseIdentifier = "ToDoItemCell"
     static let defaultArrayKey = "TodoListArray"
     static let itemsPlistFileName = "Items.plist"
+    struct CoreData {
+        static let modelName = "DataModel"
+        static let entityName = "Item"
+    }
 }

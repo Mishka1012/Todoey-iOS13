@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Item: Codable {
+struct ListItem: Codable {
     let text: String
     var check: Bool
     var data: Data? {
@@ -30,7 +30,7 @@ struct Item: Codable {
             fatalError()
         }
         do {
-            let decoded = try JSONDecoder().decode(Item.self, from: safeData)
+            let decoded = try JSONDecoder().decode(ListItem.self, from: safeData)
             self = decoded
         } catch {
             print(error.localizedDescription)
