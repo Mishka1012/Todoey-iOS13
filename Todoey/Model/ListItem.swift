@@ -9,8 +9,8 @@
 import Foundation
 
 struct ListItem: Codable {
-    let text: String
-    var check: Bool
+    let title: String
+    var done: Bool
     var data: Data? {
         do {
             let data = try JSONEncoder().encode(self)
@@ -21,8 +21,8 @@ struct ListItem: Codable {
         }
     }
     init(_ itemText: String, checked: Bool) {
-        text = itemText
-        check = checked
+        title = itemText
+        done = checked
     }
     init(data: Data?) {
         guard let safeData = data else {

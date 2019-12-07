@@ -78,9 +78,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Core Data Saving support
 
     func saveContext () {
+        //context is the staging area
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
+                //commiting data to source control
                 try context.save()
             } catch {
                 // Replace this implementation with code to handle the error appropriately.
