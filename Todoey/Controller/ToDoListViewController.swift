@@ -208,20 +208,25 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         //catching an empty text field
         if text == "" {
             loadCoreDataItems()
-            tableView.reloadData()
-            searchBar.resignFirstResponder()
-            return
+        } else {
+            //query called predicate
+            request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+            //sorting results
+            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+            //fetching
+            loadCoreDataItems(with: request)
         }
-        //query called predicate
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
-        //sorting
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        //fetching
-        loadCoreDataItems(with: request)
         //hiding keyboard
         searchBar.resignFirstResponder()
     }
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard searchBar.text?.count == 0 else {
+            return
+        }
+        loadCoreDataItems()
+        DispatchQueue.main.async {
+            searchBar.resignFirstResponder()
+        }
     }
 }
 
