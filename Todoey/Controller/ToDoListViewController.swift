@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     
     //core data
     var itemArray = [Item]()
@@ -64,7 +64,7 @@ class ToDoListViewController: UITableViewController {
         //toggling the check mark
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         //another way
-        //itemArray[indexPath.row].setValue(<#T##value: Any?##Any?#>, forKey: "done")
+        //itemArray[indexPath.row].setValue(true, forKey: "done")
         //saving items
         saveCoreDataItems()
         //deselecting highlight on the cells with animation.
@@ -75,6 +75,7 @@ class ToDoListViewController: UITableViewController {
     //DELETE
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard editingStyle == .delete else {
+            //Could be the .insert style
             return
         }
         //DELETE Order Matters.
@@ -197,6 +198,40 @@ class ToDoListViewController: UITableViewController {
          }
          this makes this object quite persistent nomatter the instance references I can make from various files.
          */
+    }
+    //MARK: - SearchBar Delegate
+    //delegate is set up with storyboard
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        //request
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        guard let text = searchBar.text else {
+            fatalError("No Text in search bar!")
+        }
+        //catching an empty text field
+        if text == "" {
+            loadCoreDataItems()
+            tableView.reloadData()
+            searchBar.resignFirstResponder()
+            return
+        }
+        //query called predicate
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+        request.predicate = predicate
+        //sorting
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        request.sortDescriptors = [sortDescriptor]
+        //fetching request
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        //displaying results
+        tableView.reloadData()
+        //hiding keyboard
+        searchBar.resignFirstResponder()
+    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
     }
 }
 
