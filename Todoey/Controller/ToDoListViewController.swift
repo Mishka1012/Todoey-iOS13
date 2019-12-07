@@ -51,7 +51,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         return 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.cellReuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.cellReuseIdentifier, for: indexPath)
         let item = itemArray[indexPath.row]
         cell.textLabel?.text = item.title
         //ternary operator
@@ -176,12 +176,12 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
             }
             return safeData
         }
-        defaults.set(dataArray, forKey: K.defaultArrayKey)
+        defaults.set(dataArray, forKey: K.TableView.defaultArrayKey)
         //reloading the table view to show data
         self.tableView.reloadData()
     }
     func extractArrayFromUserDefaults() {
-        guard let dataArray = defaults.array(forKey: K.defaultArrayKey) as? [Data] else {
+        guard let dataArray = defaults.array(forKey: K.TableView.defaultArrayKey) as? [Data] else {
             print("Can't extract data array from user defaults.")
             return
         }
