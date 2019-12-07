@@ -59,9 +59,14 @@ class ToDoListViewController: UITableViewController {
         return cell
     }
     //MARK: - Table View Delegate Method
+    //UPDATE
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //toggling the check mark
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        //another way
+        //itemArray[indexPath.row].setValue(<#T##value: Any?##Any?#>, forKey: <#T##String#>)
+        //saving items
+        saveCoreDataItems()
         //deselecting highlight on the cells with animation.
         tableView.deselectRow(at: indexPath, animated: true)
         //i'm not sure if we need to reload here
@@ -98,6 +103,7 @@ class ToDoListViewController: UITableViewController {
     /*
      Object Oriented Database. Can be relational.
      */
+    //CREATE
     func saveCoreDataItems() {
         do {
             try context.save()
@@ -107,8 +113,16 @@ class ToDoListViewController: UITableViewController {
         //reloading the table view to show data
         self.tableView.reloadData()
     }
+    //READ
     func loadCoreDataItems() {
         //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        //have to specify data type for entity here
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     //MARK: - NSCoder A different method for savind data
