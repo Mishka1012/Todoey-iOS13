@@ -125,16 +125,14 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         //reloading the table view to show data
         self.tableView.reloadData()
     }
-    //READ
-    func loadCoreDataItems() {
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        //have to specify data type for entity here
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
+    //READ Notice the default value
+    func loadCoreDataItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         do {
             itemArray = try context.fetch(request)
         } catch {
             fatalError(error.localizedDescription)
         }
+        tableView.reloadData()
     }
     
     //MARK: - NSCoder A different method for savind data
@@ -215,19 +213,11 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
             return
         }
         //query called predicate
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
-        request.predicate = predicate
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
         //sorting
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-        request.sortDescriptors = [sortDescriptor]
-        //fetching request
-        do {
-            itemArray = try context.fetch(request)
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-        //displaying results
-        tableView.reloadData()
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        //fetching
+        loadCoreDataItems(with: request)
         //hiding keyboard
         searchBar.resignFirstResponder()
     }
