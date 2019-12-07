@@ -64,13 +64,24 @@ class ToDoListViewController: UITableViewController {
         //toggling the check mark
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         //another way
-        //itemArray[indexPath.row].setValue(<#T##value: Any?##Any?#>, forKey: <#T##String#>)
+        //itemArray[indexPath.row].setValue(<#T##value: Any?##Any?#>, forKey: "done")
         //saving items
         saveCoreDataItems()
         //deselecting highlight on the cells with animation.
         tableView.deselectRow(at: indexPath, animated: true)
         //i'm not sure if we need to reload here
         tableView.reloadData()
+    }
+    //DELETE
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard editingStyle == .delete else {
+            return
+        }
+        //DELETE Order Matters.
+        context.delete(itemArray[indexPath.row])
+        itemArray.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .fade)
+        saveCoreDataItems()
     }
     //MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
