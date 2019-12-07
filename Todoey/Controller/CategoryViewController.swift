@@ -11,7 +11,7 @@ import CoreData
 
 class CategoryViewController: UITableViewController {
     
-    var categoriesArray = [Category]()
+    var categories = [Category]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
@@ -29,11 +29,11 @@ class CategoryViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return categoriesArray.count
+        return categories.count
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.CategoryCellIdentifier, for: indexPath)
-        let category = categoriesArray[indexPath.row]
+        let category = categories[indexPath.row]
         cell.textLabel?.text = category.name
         return cell
     }
@@ -46,12 +46,12 @@ class CategoryViewController: UITableViewController {
         let alert = UIAlertController(title: "Add New ToDoEy Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
             //what will happen once user clicks add item button.
-            guard let catName = textField.text else {
+            guard let categoryName = textField.text else {
                 fatalError("Unable to get new text item to append")
             }
             let newCategory = Category(context: self.context)
-            newCategory.name = catName
-            self.categoriesArray.append(newCategory)
+            newCategory.name = categoryName
+            self.categories.append(newCategory)
             self.saveCategories()
         }
         alert.addTextField { (alertTextField) in
@@ -63,22 +63,37 @@ class CategoryViewController: UITableViewController {
     }
     
     //MARK: - Table View Delegate
+    /*
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             //delete category here
-            context.delete(categoriesArray[indexPath.row])
-            categoriesArray.remove(at: indexPath.row)
+            context.delete(categories[indexPath.row])
+            categories.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             saveCategories()
         }
     }
+     */
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //perform a segue here
+        performSegue(withIdentifier: K.goToItemsSegueIdentifier, sender: self)
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+    //MARK: - Preparing for segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let destinationVC = segue.destination as? ToDoListViewController else {
+            fatalError("Wrong destination Triggered.")
+        }
+        guard let indexPath = tableView.indexPathForSelectedRow else {
+            fatalError("No index path selected at segue")
+        }
+        destinationVC.selectedCategory = categories[indexPath.row]
+        
     }
     //MARK: - Data Manipulation
     func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
         do {
-            categoriesArray = try context.fetch(request)
+            categories = try context.fetch(request)
         } catch {
             fatalError(error.localizedDescription)
         }

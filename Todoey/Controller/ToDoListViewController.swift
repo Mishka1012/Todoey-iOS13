@@ -11,6 +11,13 @@ import CoreData
 
 class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     
+    //selected category
+    var selectedCategory: Category? {
+        didSet {
+            loadCoreDataItems()
+        }
+    }
+    
     //core data
     var itemArray = [Item]()
     //accessing current app delegate's persistent container context
@@ -30,7 +37,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         //loading core data
-        loadCoreDataItems()
+        //loadCoreDataItems()
         //loading nscoder
         //loadNSCoderData()
         // Do any additional setup after loading the view.
@@ -74,8 +81,12 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     }
     //DELETE
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        guard editingStyle == .delete else {
-            //Could be the .insert style
+        guard editingStyle == .delete else {//toggling the check mark
+            itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+            //saving items
+            saveCoreDataItems()
+            //i'm not sure if we need to reload here
+            tableView.reloadData()
             return
         }
         //DELETE Order Matters.
@@ -101,6 +112,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
             let newItem = Item(context: self.context)
             newItem.title = text
             newItem.done = false
+            newItem.parentCategory = self.selectedCategory
             self.itemArray.append(newItem)
             self.saveCoreDataItems()
         }
@@ -126,7 +138,14 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         self.tableView.reloadData()
     }
     //READ Notice the default value
-    func loadCoreDataItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+    func loadCoreDataItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        if let additionalPredicate = predicate {
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [additionalPredicate, categoryPredicate])
+            request.predicate = compoundPredicate
+        } else {
+            request.predicate = categoryPredicate
+        }
         do {
             itemArray = try context.fetch(request)
         } catch {
@@ -210,11 +229,11 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
             loadCoreDataItems()
         } else {
             //query called predicate
-            request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+            let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
             //sorting results
             request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
             //fetching
-            loadCoreDataItems(with: request)
+            loadCoreDataItems(with: request, predicate: predicate)
         }
         //hiding keyboard
         searchBar.resignFirstResponder()
