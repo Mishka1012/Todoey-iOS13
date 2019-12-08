@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		E84B65F1239C0116003A2CD2 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84B65F0239C0116003A2CD2 /* CategoryViewController.swift */; };
-		E86A1239239A03EB006F9162 /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A1238239A03EB006F9162 /* ListItem.swift */; };
 		E86A123B239A05C5006F9162 /* K.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A123A239A05C5006F9162 /* K.swift */; };
 		E88BD8FA239A821000941A1A /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E88BD8F8239A821000941A1A /* DataModel.xcdatamodeld */; };
 		EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2BE4F9239524DB00FB933B /* AppDelegate.swift */; };
@@ -20,7 +19,6 @@
 
 /* Begin PBXFileReference section */
 		E84B65F0239C0116003A2CD2 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
-		E86A1238239A03EB006F9162 /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		E86A123A239A05C5006F9162 /* K.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = K.swift; sourceTree = "<group>"; };
 		E88BD8F9239A821000941A1A /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		EB2BE4F6239524DB00FB933B /* Todoey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoey.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,7 +44,6 @@
 		E86A1235239A03AF006F9162 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				E86A1238239A03EB006F9162 /* ListItem.swift */,
 				E86A123A239A05C5006F9162 /* K.swift */,
 				E88BD8F8239A821000941A1A /* DataModel.xcdatamodeld */,
 			);
@@ -176,7 +173,6 @@
 				E86A123B239A05C5006F9162 /* K.swift in Sources */,
 				EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */,
 				E84B65F1239C0116003A2CD2 /* CategoryViewController.swift in Sources */,
-				E86A1239239A03EB006F9162 /* ListItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

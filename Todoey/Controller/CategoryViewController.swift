@@ -19,6 +19,11 @@ class CategoryViewController: UITableViewController {
         //loading core data items
         loadCategories()
     }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        //saving state before exit
+        saveCategories()
+    }
 
     // MARK: - Table view data source
 
@@ -63,7 +68,7 @@ class CategoryViewController: UITableViewController {
     }
     
     //MARK: - Table View Delegate
-    /*
+    /* Delete functionality is not working yet due to conflict with items in the next view controller.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             //delete category here
