@@ -117,18 +117,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     }
     //READ Notice the default value
     func loadCoreDataItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
-        if let additionalPredicate = predicate {
-            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [additionalPredicate, categoryPredicate])
-            request.predicate = compoundPredicate
-        } else {
-            request.predicate = categoryPredicate
-        }
-        do {
-            itemArray = try context.fetch(request)
-        } catch {
-            fatalError(error.localizedDescription)
-        }
+        itemArray = CDModel.loadCoreDataItems(with: request, withPredicate: predicate, forCategory: selectedCategory!, forContext: context)
         tableView.reloadData()
     }
     //MARK: - SearchBar Delegate

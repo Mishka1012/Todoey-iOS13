@@ -68,19 +68,27 @@ class CategoryViewController: UITableViewController {
     }
     
     //MARK: - Table View Delegate
-    /* Delete functionality is not working yet due to conflict with items in the next view controller.
+    //DELETE
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            //getting current category
+            let category = categories[indexPath.row]
+            //get all items for category
+            let items = CDModel.loadCoreDataItems(forCategory: category, forContext: context)
+            //looping through items to delete all
+            for item in items {
+                context.delete(item)
+            }
             //delete category here
-            context.delete(categories[indexPath.row])
+            context.delete(category)
             categories.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             saveCategories()
         }
     }
-     */
+    //segue on click
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //perform a segue here
+        //perform a segue here (order is important)
         performSegue(withIdentifier: K.goToItemsSegueIdentifier, sender: self)
         tableView.deselectRow(at: indexPath, animated: false)
     }
