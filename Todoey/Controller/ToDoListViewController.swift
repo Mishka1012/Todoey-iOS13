@@ -15,22 +15,17 @@ class ToDoListViewController: UITableViewController {
         Item("Buy Eggos", checked: false),
         Item("Destroy Demorgon", checked: false)
     ]
-    //user defaults
-    let defaults = UserDefaults.standard
     //nscoder
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(K.itemsPlistFileName)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         loadNSCoderData()
-        // Do any additional setup after loading the view.
-        //user defaults is not the right application for this
-        //extractArrayFromUserDefaults()
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         //this is too slow, we have to use something else.
-        //saveArrayToUserDefaults()
+        saveNSCoderData()
     }
     
     //MARK: - Tableview Datasource Methods
@@ -86,12 +81,7 @@ class ToDoListViewController: UITableViewController {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
-    //MARK: - Core Data
-    /*
-     Object Oriented Database.
-     */
-    
-    //MARK: - NSCoder A different method for savind data
+    //MARK: - NSCoder A different method for saving data
     /*
      SandBoxing concept: Each app can only access its own files and folders.
      Data also gets synched to iCloud
@@ -120,35 +110,6 @@ class ToDoListViewController: UITableViewController {
             print(error.localizedDescription)
             fatalError()
         }
-    }
-    
-    //MARK: - User Defaults is a dictionary
-    func saveArrayToUserDefaults() {
-        let dataArray = itemArray.map { (item) -> Data in
-            guard let safeData = item.data else {
-                print("Unable to safely extract data from item")
-                fatalError()
-            }
-            return safeData
-        }
-        defaults.set(dataArray, forKey: K.defaultArrayKey)
-    }
-    func extractArrayFromUserDefaults() {
-        guard let dataArray = defaults.array(forKey: K.defaultArrayKey) as? [Data] else {
-            print("Can't extract data array from user defaults.")
-            return
-        }
-        itemArray = dataArray.map({ (data) -> Item in
-            return Item(data: data)
-        })
-        //It is not good to keep arrays in user defaults since it will make user loading app really slow.  It's not a databse so it should not be used as such.
-        /*Sigletons Notes
-         singletons don't matter how many references are made the original gets changed with the reference nomatter who is calling the object.
-         class UserDefaults {
-            standard = UserDefaults()//Roughly points to the same plist in bundle
-         }
-         this makes this object quite persistent nomatter the instance references I can make from various files.
-         */
     }
 }
 

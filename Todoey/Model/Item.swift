@@ -11,30 +11,8 @@ import Foundation
 struct Item: Codable {
     let text: String
     var check: Bool
-    var data: Data? {
-        do {
-            let data = try JSONEncoder().encode(self)
-            return data
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
-    }
     init(_ itemText: String, checked: Bool) {
         text = itemText
         check = checked
-    }
-    init(data: Data?) {
-        guard let safeData = data else {
-            print("Unable to extract data.")
-            fatalError()
-        }
-        do {
-            let decoded = try JSONDecoder().decode(Item.self, from: safeData)
-            self = decoded
-        } catch {
-            print(error.localizedDescription)
-            fatalError()
-        }
     }
 }
