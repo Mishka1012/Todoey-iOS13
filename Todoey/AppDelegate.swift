@@ -8,6 +8,12 @@
 
 import UIKit
 import CoreData
+import RealmSwift
+
+class Cat: Object {
+    @objc dynamic var name = ""
+    @objc dynamic var age = 0
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +22,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+        let myCat = Cat()
+        myCat.name = "Tuzik"
+        myCat.age = 1
+        print("name of cat: \(myCat.name)")
+        do {
+            let realm = try Realm()
+            let kittens = realm.objects(Cat.self).filter("age < 2")
+            print(kittens.count)
+            try realm.write {
+                realm.add(myCat)
+            }
+            print(kittens.count)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
         return true
     }
 
