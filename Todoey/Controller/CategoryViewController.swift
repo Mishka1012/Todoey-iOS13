@@ -7,22 +7,21 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
     
     var categories = [Category]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //loading core data items
-        loadCategories()
+//        loadCategories()
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         //saving state before exit
-        saveCategories()
+//        saveCategories()
     }
 
     // MARK: - Table view data source
@@ -54,10 +53,10 @@ class CategoryViewController: UITableViewController {
             guard let categoryName = textField.text else {
                 fatalError("Unable to get new text item to append")
             }
-            let newCategory = Category(context: self.context)
+            let newCategory = Category()
             newCategory.name = categoryName
             self.categories.append(newCategory)
-            self.saveCategories()
+            self.save(category: newCategory)
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create New Category"
@@ -74,16 +73,16 @@ class CategoryViewController: UITableViewController {
             //getting current category
             let category = categories[indexPath.row]
             //get all items for category
-            let items = CDModel.loadCoreDataItems(forCategory: category, forContext: context)
-            //looping through items to delete all
-            for item in items {
-                context.delete(item)
-            }
-            //delete category here
-            context.delete(category)
-            categories.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            saveCategories()
+//            let items = CDModel.loadCoreDataItems(forCategory: category, forContext: context)
+//            //looping through items to delete all
+//            for item in items {
+//                context.delete(item)
+//            }
+//            //delete category here
+//            context.delete(category)
+//            categories.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//            saveCategories()
         }
     }
     //segue on click
@@ -104,17 +103,19 @@ class CategoryViewController: UITableViewController {
         
     }
     //MARK: - Data Manipulation
-    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+//    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+//        do {
+//            categories = try context.fetch(request)
+//        } catch {
+//            fatalError(error.localizedDescription)
+//        }
+//        tableView.reloadData()
+//    }
+    func save(category: Category) {
         do {
-            categories = try context.fetch(request)
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-        tableView.reloadData()
-    }
-    func saveCategories() {
-        do {
-            try context.save()
+            try K.realm.write {
+                K.realm.add(category)
+            }
         } catch {
             fatalError(error.localizedDescription)
         }

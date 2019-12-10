@@ -7,21 +7,19 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     
     //selected category
     var selectedCategory: Category? {
         didSet {
-            loadCoreDataItems()
+//            loadCoreDataItems()
         }
     }
     
     //core data
     var itemArray = [Item]()
-    //accessing current app delegate's persistent container context
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +40,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.cellReuseIdentifier, for: indexPath)
         let item = itemArray[indexPath.row]
-        cell.textLabel?.text = item.title
+//        cell.textLabel?.text = item.title
         //ternary operator
         cell.accessoryType = item.done ? .checkmark : .none
         return cell
@@ -70,10 +68,10 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
             return
         }
         //DELETE Order Matters.
-        context.delete(itemArray[indexPath.row])
-        itemArray.remove(at: indexPath.row)
-        tableView.deleteRows(at: [indexPath], with: .fade)
-        saveCoreDataItems()
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
+//        tableView.deleteRows(at: [indexPath], with: .fade)
+//        saveCoreDataItems()
     }
     //MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -87,12 +85,12 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
                 fatalError("Unable to get new text item to append to array")
             }
             //core data way
-            let newItem = Item(context: self.context)
-            newItem.title = text
-            newItem.done = false
-            newItem.parentCategory = self.selectedCategory
-            self.itemArray.append(newItem)
-            self.saveCoreDataItems()
+//            let newItem = Item(context: self.context)
+//            newItem.title = text
+//            newItem.done = false
+//            newItem.parentCategory = self.selectedCategory
+//            self.itemArray.append(newItem)
+//            self.saveCoreDataItems()
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
@@ -108,7 +106,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     //CREATE
     func saveCoreDataItems() {
         do {
-            try context.save()
+//            try context.save()
         } catch {
             fatalError(error.localizedDescription)
         }
@@ -116,29 +114,29 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         self.tableView.reloadData()
     }
     //READ Notice the default value
-    func loadCoreDataItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-        itemArray = CDModel.loadCoreDataItems(with: request, withPredicate: predicate, forCategory: selectedCategory!, forContext: context)
-        tableView.reloadData()
-    }
+//    func loadCoreDataItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+//        itemArray = CDModel.loadCoreDataItems(with: request, withPredicate: predicate, forCategory: selectedCategory!, forContext: context)
+//        tableView.reloadData()
+//    }
     //MARK: - SearchBar Delegate
     //delegate is set up with storyboard
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         //request
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        guard let text = searchBar.text else {
-            fatalError("No Text in search bar!")
-        }
-        //catching an empty text field
-        if text == "" {
-            loadCoreDataItems()
-        } else {
-            //query called predicate
-            let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
-            //sorting results
-            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-            //fetching
-            loadCoreDataItems(with: request, predicate: predicate)
-        }
+//        let request: NSFetchRequest<Item> = Item.fetchRequest()
+//        guard let text = searchBar.text else {
+//            fatalError("No Text in search bar!")
+//        }
+//        //catching an empty text field
+//        if text == "" {
+//            loadCoreDataItems()
+//        } else {
+//            //query called predicate
+//            let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
+//            //sorting results
+//            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+//            //fetching
+//            loadCoreDataItems(with: request, predicate: predicate)
+//        }
         //hiding keyboard
         searchBar.resignFirstResponder()
     }
@@ -146,7 +144,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         guard searchBar.text?.count == 0 else {
             return
         }
-        loadCoreDataItems()
+//        loadCoreDataItems()
         DispatchQueue.main.async {
             searchBar.resignFirstResponder()
         }
