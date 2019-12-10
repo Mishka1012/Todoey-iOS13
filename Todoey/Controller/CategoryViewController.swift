@@ -11,7 +11,7 @@ import RealmSwift
 
 class CategoryViewController: UITableViewController {
     
-    var categories: Results<Category>!
+    var categories: Results<Category>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,12 +33,15 @@ class CategoryViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return categories.count
+        return categories?.count ?? 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.CategoryCellIdentifier, for: indexPath)
-        let category = categories[indexPath.row]
-        cell.textLabel?.text = category.name
+        if let category = categories?[indexPath.row] {
+            cell.textLabel?.text = category.name
+        } else {
+            cell.textLabel?.text = "NO CATEGORIES"
+        }
         return cell
     }
     
@@ -70,7 +73,9 @@ class CategoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             //getting current category
-            let category = categories[indexPath.row]
+            guard let category = categories?[indexPath.row] else {
+                return
+            }
             //get all items for category
 //            let items = CDModel.loadCoreDataItems(forCategory: category, forContext: context)
 //            //looping through items to delete all
@@ -97,7 +102,7 @@ class CategoryViewController: UITableViewController {
         guard let indexPath = tableView.indexPathForSelectedRow else {
             fatalError("No index path selected at segue")
         }
-        destinationVC.selectedCategory = categories[indexPath.row]
+        destinationVC.selectedCategory = categories?[indexPath.row]
         
     }
     //MARK: - Data Manipulation

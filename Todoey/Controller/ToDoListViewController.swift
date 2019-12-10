@@ -14,12 +14,12 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     //selected category
     var selectedCategory: Category? {
         didSet {
-//            loadCoreDataItems()
+            loadItems()
         }
     }
     
     //core data
-    var itemArray = [Item]()
+    var toDoItems: Results<Item>?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,31 +27,37 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         //this is too slow, we have to use something else.
-        saveCoreDataItems()
+        //saveCoreDataItems()
     }
     
     //MARK: - Tableview Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return toDoItems?.count ?? 1
     }
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.cellReuseIdentifier, for: indexPath)
-        let item = itemArray[indexPath.row]
-//        cell.textLabel?.text = item.title
+        let item = toDoItems?[indexPath.row]
+        cell.textLabel?.text = item?.name ?? "NO ITEMS YET"
         //ternary operator
-        cell.accessoryType = item.done ? .checkmark : .none
+        cell.accessoryType = item?.done ?? false ? .checkmark : .none
         return cell
     }
     //MARK: - Table View Delegate Method
     //UPDATE
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //toggling the check mark
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-        //saving items
-        saveCoreDataItems()
+        guard let item = toDoItems?[indexPath.row] else {
+            fatalError("Unable to fetch item for row")
+        }
+        do {
+            try K.realm.write {
+                item.done = !item.done
+            }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
         //deselecting highlight on the cells with animation.
         tableView.deselectRow(at: indexPath, animated: true)
         //i'm not sure if we need to reload here
@@ -59,19 +65,22 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
     }
     //DELETE
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        guard editingStyle == .delete else {//toggling the check mark
-            itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-            //saving items
-            saveCoreDataItems()
-            //i'm not sure if we need to reload here
-            tableView.reloadData()
+        guard editingStyle == .delete else {
+            //somthing else, could be .insert
             return
         }
-        //DELETE Order Matters.
-//        context.delete(itemArray[indexPath.row])
-//        itemArray.remove(at: indexPath.row)
-//        tableView.deleteRows(at: [indexPath], with: .fade)
-//        saveCoreDataItems()
+        guard let item = toDoItems?[indexPath.row] else {
+            fatalError("Unable to fetch item for row")
+        }
+        do {
+            try K.realm.write {
+                K.realm.delete(item)
+            }
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        //hiding row
+        tableView.deleteRows(at: [indexPath], with: .fade)
     }
     //MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -84,13 +93,22 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
             guard let text = textField.text else {
                 fatalError("Unable to get new text item to append to array")
             }
-            //core data way
-//            let newItem = Item(context: self.context)
-//            newItem.title = text
-//            newItem.done = false
-//            newItem.parentCategory = self.selectedCategory
-//            self.itemArray.append(newItem)
-//            self.saveCoreDataItems()
+            guard let parentCategory = self.selectedCategory else {
+                fatalError("Missing selected category")
+            }
+            //CREATE
+            do {
+                try K.realm.write {
+                    let newItem = Item()
+                    newItem.name = text
+                    parentCategory.items.append(newItem)
+                    K.realm.add(newItem)
+                }
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+            //reloading the table view to show data
+            self.tableView.reloadData()
         }
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
@@ -99,25 +117,15 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
-    //MARK: - Core Data
+    //MARK: - Realm
     /*
      Object Oriented Database. Can be relational.
      */
-    //CREATE
-    func saveCoreDataItems() {
-        do {
-//            try context.save()
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-        //reloading the table view to show data
-        self.tableView.reloadData()
-    }
     //READ Notice the default value
-//    func loadCoreDataItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-//        itemArray = CDModel.loadCoreDataItems(with: request, withPredicate: predicate, forCategory: selectedCategory!, forContext: context)
-//        tableView.reloadData()
-//    }
+    func loadItems() {
+        toDoItems = selectedCategory?.items.sorted(byKeyPath: "name", ascending: true)
+        tableView.reloadData()
+    }
     //MARK: - SearchBar Delegate
     //delegate is set up with storyboard
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
