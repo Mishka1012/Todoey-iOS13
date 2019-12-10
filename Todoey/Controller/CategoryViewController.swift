@@ -11,12 +11,12 @@ import RealmSwift
 
 class CategoryViewController: UITableViewController {
     
-    var categories = [Category]()
+    var categories: Results<Category>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         //loading core data items
-//        loadCategories()
+        loadCategories()
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -55,7 +55,6 @@ class CategoryViewController: UITableViewController {
             }
             let newCategory = Category()
             newCategory.name = categoryName
-            self.categories.append(newCategory)
             self.save(category: newCategory)
         }
         alert.addTextField { (alertTextField) in
@@ -80,7 +79,6 @@ class CategoryViewController: UITableViewController {
 //            }
 //            //delete category here
 //            context.delete(category)
-//            categories.remove(at: indexPath.row)
 //            tableView.deleteRows(at: [indexPath], with: .fade)
 //            saveCategories()
         }
@@ -103,14 +101,10 @@ class CategoryViewController: UITableViewController {
         
     }
     //MARK: - Data Manipulation
-//    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
-//        do {
-//            categories = try context.fetch(request)
-//        } catch {
-//            fatalError(error.localizedDescription)
-//        }
-//        tableView.reloadData()
-//    }
+    func loadCategories() {
+        categories = K.realm.objects(Category.self)
+        tableView.reloadData()
+    }
     func save(category: Category) {
         do {
             try K.realm.write {
