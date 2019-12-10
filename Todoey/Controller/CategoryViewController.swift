@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
 class CategoryViewController: UITableViewController {
     
@@ -17,6 +18,8 @@ class CategoryViewController: UITableViewController {
         super.viewDidLoad()
         //loading core data items
         loadCategories()
+        //clearing items for swipe view
+        tableView.rowHeight = 80
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -36,7 +39,8 @@ class CategoryViewController: UITableViewController {
         return categories?.count ?? 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.CategoryCellIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.CategoryCellIdentifier, for: indexPath) as! SwipeTableViewCell
+        cell.delegate = self
         if let category = categories?[indexPath.row] {
             cell.textLabel?.text = category.name
         } else {
@@ -69,25 +73,6 @@ class CategoryViewController: UITableViewController {
     }
     
     //MARK: - Table View Delegate
-    //DELETE
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            //getting current category
-            guard let category = categories?[indexPath.row] else {
-                return
-            }
-            //get all items for category
-//            let items = CDModel.loadCoreDataItems(forCategory: category, forContext: context)
-//            //looping through items to delete all
-//            for item in items {
-//                context.delete(item)
-//            }
-//            //delete category here
-//            context.delete(category)
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//            saveCategories()
-        }
-    }
     //segue on click
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //perform a segue here (order is important)
@@ -119,5 +104,36 @@ class CategoryViewController: UITableViewController {
             fatalError(error.localizedDescription)
         }
         tableView.reloadData()
+    }
+}
+//MARK: - Swipe Cell Kit
+extension CategoryViewController: SwipeTableViewCellDelegate {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            //DELETE
+            guard let category = self.categories?[indexPath.row] else {
+                fatalError("Could not extract category")
+            }
+            do {
+                try K.realm.write {
+                    K.realm.delete(category.items)
+                    K.realm.delete(category)
+                }
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+
+        // customize the action appearance
+        deleteAction.image = UIImage(systemName: "trash.fill")
+
+        return [deleteAction]
+    }
+    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+        var options = SwipeTableOptions()
+        options.expansionStyle = .destructive
+        return options
     }
 }
