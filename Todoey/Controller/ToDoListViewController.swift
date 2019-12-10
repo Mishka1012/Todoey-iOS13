@@ -101,6 +101,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
                 try K.realm.write {
                     let newItem = Item()
                     newItem.name = text
+                    newItem.dateCreated = Date()
                     parentCategory.items.append(newItem)
                     K.realm.add(newItem)
                 }
@@ -123,28 +124,22 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
      */
     //READ Notice the default value
     func loadItems() {
-        toDoItems = selectedCategory?.items.sorted(byKeyPath: "name", ascending: true)
+        toDoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true)
         tableView.reloadData()
     }
     //MARK: - SearchBar Delegate
     //delegate is set up with storyboard
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //request
-//        let request: NSFetchRequest<Item> = Item.fetchRequest()
-//        guard let text = searchBar.text else {
-//            fatalError("No Text in search bar!")
-//        }
-//        //catching an empty text field
-//        if text == "" {
-//            loadCoreDataItems()
-//        } else {
-//            //query called predicate
-//            let predicate = NSPredicate(format: "title CONTAINS[cd] %@", text)
-//            //sorting results
-//            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//            //fetching
-//            loadCoreDataItems(with: request, predicate: predicate)
-//        }
+        guard let text = searchBar.text else {
+            fatalError("No Text in search bar!")
+        }
+        //catching an empty text field
+        if text == "" {
+            loadItems()
+        } else {
+            toDoItems = toDoItems?.filter("name CONTAINS[cd] %@", text).sorted(byKeyPath: "dateCreated", ascending: true)
+            tableView.reloadData()
+        }
         //hiding keyboard
         searchBar.resignFirstResponder()
     }
@@ -152,7 +147,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         guard searchBar.text?.count == 0 else {
             return
         }
-//        loadCoreDataItems()
+        loadItems()
         DispatchQueue.main.async {
             searchBar.resignFirstResponder()
         }
