@@ -36,9 +36,14 @@ class CategoryViewController: SwipeTableViewController {
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        guard let category = categories?[indexPath.row] else {
+            fatalError("Unable to extract category.")
+        }
         //random flat color for Chameleon Framework
-        cell.backgroundColor = UIColor.randomFlat()
-        cell.textLabel?.text = categories?[indexPath.row].name ?? "NO CATEGORIES"
+        cell.backgroundColor = UIColor(hexString: category.color)
+        cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn:cell.backgroundColor!, isFlat:true)
+        //setting text
+        cell.textLabel?.text = category.name ?? "NO CATEGORIES"
         return cell
     }
     
