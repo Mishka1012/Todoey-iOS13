@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
     
@@ -41,6 +42,14 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
         cell.textLabel?.text = item?.name ?? "NO ITEMS YET"
         //ternary operator
         cell.accessoryType = item?.done ?? false ? .checkmark : .none
+        //color for Chameleon Framework
+        guard let category = selectedCategory else {
+            fatalError("Could not find category for bg color")
+        }
+        let baseColor = UIColor(hexString: category.color)
+        let percentage = CGFloat(indexPath.row) / CGFloat(toDoItems?.count ?? 1)
+        cell.backgroundColor = baseColor?.lighten(byPercentage: percentage)
+        cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn:cell.backgroundColor!, isFlat:true)
         return cell
     }
     //MARK: - Table View Delegate Method
