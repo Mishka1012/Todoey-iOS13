@@ -22,7 +22,6 @@ struct K {
     }()
     struct TableView {
         static let defaultArrayKey = "TodoListArray"
-        static let CategoryCellIdentifier = "CategoryCell"
-        static let cellReuseIdentifier = "ToDoItemCell"
+        static let CellIdentifier = "Cell"
     }
 }

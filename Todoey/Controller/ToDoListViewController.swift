@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class ToDoListViewController: UITableViewController, UISearchBarDelegate {
+class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
     
     //selected category
     var selectedCategory: Category? {
@@ -38,7 +38,7 @@ class ToDoListViewController: UITableViewController, UISearchBarDelegate {
         return 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.cellReuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.CellIdentifier, for: indexPath)
         let item = toDoItems?[indexPath.row]
         cell.textLabel?.text = item?.name ?? "NO ITEMS YET"
         //ternary operator
