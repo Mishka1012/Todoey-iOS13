@@ -23,11 +23,11 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        //clearing items for swipe view
+        tableView.rowHeight = 80
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        //this is too slow, we have to use something else.
-        //saveCoreDataItems()
     }
     
     //MARK: - Tableview Datasource Methods
@@ -38,7 +38,7 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
         return 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.TableView.CellIdentifier, for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let item = toDoItems?[indexPath.row]
         cell.textLabel?.text = item?.name ?? "NO ITEMS YET"
         //ternary operator
@@ -64,13 +64,9 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
         tableView.reloadData()
     }
     //DELETE
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        guard editingStyle == .delete else {
-            //somthing else, could be .insert
-            return
-        }
-        guard let item = toDoItems?[indexPath.row] else {
-            fatalError("Unable to fetch item for row")
+    override func updateModel(at indexPath: IndexPath) {
+        guard let item = self.toDoItems?[indexPath.row] else {
+            fatalError("Could not extract item")
         }
         do {
             try K.realm.write {
@@ -79,8 +75,6 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
         } catch {
             fatalError(error.localizedDescription)
         }
-        //hiding row
-        tableView.deleteRows(at: [indexPath], with: .fade)
     }
     //MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
