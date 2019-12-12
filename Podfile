@@ -8,4 +8,6 @@ target 'Todoey' do
   
   pod 'SwipeCellKit'
   
+  pod 'ChameleonFramework/Swift', :git => 'https://github.com/wowansm/Chameleon.git', :branch => 'swift5'
+  
 end

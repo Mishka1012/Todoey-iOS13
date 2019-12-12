@@ -13,6 +13,10 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        //clearing items for swipe view
+        tableView.rowHeight = 80
+        //clearing separator
+        tableView.separatorStyle = .none
     }
     //MARK: - Swipe Cell Kit
     

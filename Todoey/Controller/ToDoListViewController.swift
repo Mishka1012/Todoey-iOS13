@@ -23,8 +23,6 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //clearing items for swipe view
-        tableView.rowHeight = 80
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
