@@ -12,10 +12,26 @@ import ChameleonFramework
 
 class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
     
+    @IBOutlet weak var searchBar: UISearchBar!
     //selected category
     var selectedCategory: Category? {
         didSet {
             loadItems()
+            guard let color = UIColor(hexString: self.selectedCategory!.color) else {
+                fatalError("Unable to extract color for bar")
+            }
+            let contrast = UIColor(contrastingBlackOrWhiteColorOn: color, isFlat: true)
+            DispatchQueue.main.async {
+                self.navigationController?.navigationBar.backgroundColor = color
+                self.navigationController?.navigationBar.barTintColor = contrast
+                self.tableView.backgroundColor = color
+                //search text field.
+                self.searchBar.barTintColor = color.darken(byPercentage: 0.1)
+                self.searchBar.searchTextField.backgroundColor = contrast
+                self.searchBar.searchTextField.textColor = color
+                //setting title text to be the same as category name
+                self.navigationItem.title = self.selectedCategory?.name
+            }
         }
     }
     

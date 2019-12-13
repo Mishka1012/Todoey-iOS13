@@ -19,6 +19,16 @@ class CategoryViewController: SwipeTableViewController {
         //loading core data items
         loadCategories()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //colors
+        let color = FlatBrown()
+        let contrast = UIColor(contrastingBlackOrWhiteColorOn: color, isFlat: true)
+        //ui settings
+        self.navigationController?.navigationBar.backgroundColor = color
+        self.navigationController?.navigationBar.barTintColor = contrast
+        self.tableView.backgroundColor = color
+    }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
     }
