@@ -23,12 +23,13 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
             let contrast = UIColor(contrastingBlackOrWhiteColorOn: color, isFlat: true)
             DispatchQueue.main.async {
                 self.navigationController?.navigationBar.backgroundColor = color
-                self.navigationController?.navigationBar.barTintColor = contrast
+                self.navigationController?.navigationBar.tintColor = contrast
                 self.tableView.backgroundColor = color
                 //search text field.
                 self.searchBar.barTintColor = color.darken(byPercentage: 0.1)
                 self.searchBar.searchTextField.backgroundColor = contrast
                 self.searchBar.searchTextField.textColor = color
+                self.searchBar.tintColor = color
                 //setting title text to be the same as category name
                 self.navigationItem.title = self.selectedCategory?.name
             }
@@ -37,13 +38,6 @@ class ToDoListViewController: SwipeTableViewController, UISearchBarDelegate {
     
     //core data
     var toDoItems: Results<Item>?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-    }
     
     //MARK: - Tableview Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
